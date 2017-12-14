@@ -1,0 +1,23 @@
+{
+  "name": "12-bamazon",
+  "version": "1.0.0",
+  "description": "npm package for bamazon homework",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaudynights/12-bamazon.git"
+  },
+  "author": "Michael Balagia @gaudynights",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gaudynights/12-bamazon/issues"
+  },
+  "homepage": "https://github.com/gaudynights/12-bamazon#readme",
+  "dependencies": {
+    "inquirer": "^4.0.1",
+    "mysql": "^2.15.0"
+  }
+}
