@@ -1,8 +1,11 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var wantedID;
+var wantedItem;
 var currStock;
 var wantedAmt;
+var item_price;
+var totalCost;
 
 
 
@@ -66,6 +69,8 @@ function custIDPrompt() {
                 connection.query(myQuery, [wantedID], function(err, res) {
                     if (err) throw err;
                     currStock = res[0].stock_quantity;
+                    item_price=res[0].price;
+                    wantedItem=res[0].product_name;
                     howMany();
                 })
             }
@@ -92,7 +97,7 @@ function howMany() {
                 console.log(" ¯\\_(ツ)_/¯ Oops! We only have " + currStock + "! ¯\\_(ツ)_/¯ ");
                 howMany();
             } else {
-                removeStock();
+                sellIt();
             }
 
 
@@ -100,9 +105,10 @@ function howMany() {
 }
 
 
-function removeStock() {
+function sellIt() {
     console.log("sellin stuff, man!");
     var newAmt = (currStock - wantedAmt);
+    totalCost=wantedAmt*item_price;
     var myQuery = connection.query("UPDATE bamazon.products SET ? WHERE ?", [{
                 stock_quantity: newAmt
             },
@@ -113,6 +119,7 @@ function removeStock() {
         function(err, res) {
             if (err) throw err;
             console.log(res.affectedRows + " products updated!\n");
+            console.log("********* Congratulations on your purchase of "+wantedAmt+" "+ wantedItem+"(s)! It cost you $"+totalCost+"! Let's keep shopping!");
             displayItems();
         }
     );
