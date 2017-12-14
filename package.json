@@ -18,6 +18,7 @@
   "homepage": "https://github.com/gaudynights/12-bamazon#readme",
   "dependencies": {
     "inquirer": "^4.0.1",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "tablefy": "^1.0.3"
   }
 }

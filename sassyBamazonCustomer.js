@@ -27,24 +27,17 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     // console.log("Welcome to Bamazon, a service similar to, but for legal reasons, distinct from Amazon.");
-    console.log("┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻| _\n┻┳| •.•)  psst! wanna buy some stuff?\n┳┻|⊂ﾉ   \n┻┳|\n");
-    displayItems();
+    console.log("┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻|\n┻┳|\n┳┻| _\n┻┳| •.•)  Psst! Wanna buy some stuff?\n┳┻|⊂ﾉ   \n┻┳|\n");
+    enterExit();
 });
 
 
+    // displayItems();
+
 function displayItems() {
-    console.log("Here are the items we have in stock: \n");
-    var myQuery = "select * from bamazon.products where 1 and stock_quantity>0"
+    var myQuery = "select item_id as 'Item ID', product_name Item, concat('$',price) Price from bamazon.products where 1 and stock_quantity>0"
     connection.query(myQuery, function(err, res) {
         if (err) throw err;
-        // for (var i = 0; i < res.length; i++) {
-            // console.log(
-            //     "Item ID: " + res[i].item_id +
-            //     " || Name: " + res[i].product_name +
-            //     " || Price: $" + res[i].price
-            // );
-
-        // }
         table.draw(res);
         custIDPrompt();
     });
@@ -55,11 +48,12 @@ function displayItems() {
 // then if or case such that if false, return insuff quant
 
 function custIDPrompt() {
+	console.log(" (•_•) \n <)   )╯ What \n /    \\ \n  \n \\(•_•) \n (   (> Chu \n /    \\ \n  \n  (•_•) \n <)   )>  Want? \n /    \\ \n ")
     inquirer
         .prompt({
             name: "prod_id",
             type: "input",
-            message: "(•_•) \n <)   )╯ What \n /    \\ \n  \n \\(•_•) \n (   (> Chu \n /    \\ \n  \n  (•_•) \n <)   )>  Want? \n /    \\ \n Item ID: ",
+            message: "Item ID: ",
             validate: function(value) {
                 if (isNaN(value) === false && value > 0) {
                     return true;
@@ -84,11 +78,12 @@ function custIDPrompt() {
 }
 
 function howMany() {
+	console.log("\n      ლ(ಠ益ಠ)ლ  \nSo how many you want?!?!\n");
     inquirer
         .prompt({
             name: "amount_wanted",
             type: "input",
-            message: "How many would you like?",
+            message: " ",
             validate: function(value) {
                 if (isNaN(value) === false && value > 0) {
                     return true;
@@ -99,7 +94,7 @@ function howMany() {
         .then(function(answer) {
             wantedAmt = answer.amount_wanted;
             if (wantedAmt > currStock) {
-                console.log(" ¯\\_(ツ)_/¯ Oops! We only have " + currStock + "! ¯\\_(ツ)_/¯ ");
+                console.log("\n ¯\\_(ツ)_/¯ Oops! We only have " + currStock + "! ¯\\_(ツ)_/¯ \n");
                 howMany();
             } else {
                 sellIt();
@@ -111,7 +106,7 @@ function howMany() {
 
 
 function sellIt() {
-    console.log("sellin stuff, man!");
+    // console.log("sellin stuff, man!");
     var newAmt = (currStock - wantedAmt);
     totalCost=wantedAmt*item_price;
     var myQuery = connection.query("UPDATE bamazon.products SET ? WHERE ?", [{
@@ -123,10 +118,31 @@ function sellIt() {
         ],
         function(err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + " products updated!\n");
-            console.log("********* Congratulations on your purchase of "+wantedAmt+" "+ wantedItem+"(s)! It cost you $"+totalCost+"! Let's keep shopping!");
-            displayItems();
+            // console.log(res.affectedRows + " products updated!\n");
+            console.log("\n+++++++  ᕕ( ՞ ᗜ ՞ )ᕗ  +++++++ \n \n Congratulations on your purchase of "+wantedAmt+" "+ wantedItem+"(s)! \n It cost you $"+totalCost+"! \n Shall we keep shopping? \n \n+++++++  ┗(＾0＾)┓  +++++++\n");
+            enterExit();
         }
     );
-    console.log(myQuery.sql);
+    // console.log(myQuery.sql);
+}
+
+function enterExit(){
+
+    inquirer
+    .prompt({
+    	name: "enter",
+    	type: "confirm",
+    	message: " ",
+    	default: true
+    })
+    .then(function(answer){
+    	if (answer.enter){
+    		displayItems();
+    	} else{
+	console.log("☆。★。☆。★ \n  。☆ 。☆。☆ \n ★。＼｜／。★ \n  Fine! See \n  ya later, \n  jerk-bag! \n ★。／｜＼。★ \n    。☆。。☆    \n ☆。★。 ☆  ★ \n");
+	connection.end();
+    	}
+    })
+
+
 }
