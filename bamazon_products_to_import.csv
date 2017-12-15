@@ -1,0 +1,11 @@
+item_id,product_name,department_name,price,stock_quantity
+1,Pizza,food,5,100
+2,Pants,clothing,20,50
+3,Converse,footwear,30,12
+4,Inception Blu-ray,entertainment,20,30
+5,TV,entertainment,200,22
+6,Beer,food,8,80
+7,La Croix,food,4,20
+8,Underpants,clothing,5,30
+9,Plate,housewares,2,110
+10,Chainsaw,tools,60,14
