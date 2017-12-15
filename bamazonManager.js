@@ -21,7 +21,6 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    // console.log("Welcome to Bamazon, a service similar to, but for legal reasons, distinct from Amazon.");
     console.log("Welcome, Manager!");
     managerOptions();
 });
@@ -85,30 +84,18 @@ function displayLowItems() {
             let table = new tablefy();
             table.draw(res);
         };
-        // for i 
-        // console.log(res[i].item_id+" - "+res[i].product_name+" - only "+res[i].stock_quantity+" left!")
         managerOptions()
     });
 }
 
 
 function chooseInventoryToAdd() {
-    // item_id, product_name, price, stock_quantity
     var myQuery = "select * from bamazon.products";
     connection.query(myQuery, function(err, res) {
         if (err) throw err;
-        // console.log(res);
         let table = new tablefy();
         table.draw(res);
-        // for (var i = 0; i < res.length; i++) {
-        //     console.log(
-        //         "Item ID: " + res[i].item_id +
-        //         " || Name: " + res[i].product_name +
-        //         " || Price: $" + res[i].price +
-        //         " || Quantity: $" + res[i].stock_quantity
-        //     );
 
-        // };
         inquirer
             .prompt([{
                     name: "itemToIncrease",
