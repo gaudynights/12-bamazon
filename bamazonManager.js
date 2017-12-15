@@ -1,7 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var tablefy = require("tablefy");
-var table = new tablefy();
+let table = new tablefy();
 
 
 
@@ -65,9 +65,10 @@ function managerOptions() {
 
 
 function displayAllItems() {
-    var myQuery = "select item_id, product_name, price, stock_quantity from bamazon.products"
+    var myQuery = "select * from bamazon.products"
     connection.query(myQuery, function(err, res) {
         if (err) throw err;
+        let table = new tablefy();
         table.draw(res);
         managerOptions()
     });
@@ -77,23 +78,37 @@ function displayLowItems() {
     var myQuery = "select item_id, product_name, price, stock_quantity from bamazon.products where 1 and stock_quantity<5"
     connection.query(myQuery, function(err, res) {
         if (err) throw err;
-        if (res.length > 0) {
-            table.draw(res);
+        if (res.length <1) {
+            console.log("We're all stocked!");
+            
         } else {
-            console.log("We're all stocked!")
+            let table = new tablefy();
+            table.draw(res);
         };
+        // for i 
+        // console.log(res[i].item_id+" - "+res[i].product_name+" - only "+res[i].stock_quantity+" left!")
         managerOptions()
     });
 }
 
 
 function chooseInventoryToAdd() {
-
-    var myQuery = "select item_id, product_name, price, stock_quantity from bamazon.products";
+    // item_id, product_name, price, stock_quantity
+    var myQuery = "select * from bamazon.products";
     connection.query(myQuery, function(err, res) {
         if (err) throw err;
         // console.log(res);
+        let table = new tablefy();
         table.draw(res);
+        // for (var i = 0; i < res.length; i++) {
+        //     console.log(
+        //         "Item ID: " + res[i].item_id +
+        //         " || Name: " + res[i].product_name +
+        //         " || Price: $" + res[i].price +
+        //         " || Quantity: $" + res[i].stock_quantity
+        //     );
+
+        // };
         inquirer
             .prompt([{
                     name: "itemToIncrease",
@@ -120,7 +135,9 @@ function chooseInventoryToAdd() {
             ])
             .then(function(answer) {
                 var myQuery2 = connection.query("UPDATE bamazon.products SET ? WHERE ?", [{
-                            stock_quantity: answer.howManyToAdd
+                            stock_quantity: 
+                            // res[itemToIncrease].stockQuantity+=
+                            answer.howManyToAdd
                         },
                         {
                             item_id: answer.itemToIncrease
@@ -129,12 +146,48 @@ function chooseInventoryToAdd() {
                     function(err, res) {
                         if (err) throw err;
                         console.log(res.affectedRows + " products updated!\n");
-                        // console.log("\n+++++++  ᕕ( ՞ ᗜ ՞ )ᕗ  +++++++ \n \n Congratulations on your purchase of "+wantedAmt+" "+ wantedItem+"(s)! \n It cost you $"+totalCost+"! \n Shall we keep shopping? \n \n+++++++  ┗(＾0＾)┓  +++++++\n");
-                        // enterExit();
+                        managerOptions();
                     }
                 );
             });
 
     });
 
+}
+
+function addNewItem() {
+inquirer.prompt([
+    {
+        name: "new_prod_name",
+        message: "What is the name of the new product?"
+    },
+    {
+        name: "new_prod_department",
+        message: "In which department will the new product live?"
+    },
+    {
+        name: "new_prod_price",
+        message: "How much will the new product cost?"
+    },
+    {
+        name: "new_prod_quantity",
+        message: "How many are we stocking?"
+    }    
+    ]).then(function(answer){
+        var myQuery=connection.query("INSERT INTO bamazon.products SET ?",
+        {
+            product_name: answer.new_prod_name ,
+            department_name: answer.new_prod_department,
+            price: answer.new_prod_price, 
+            stock_quantity: answer.new_prod_quantity 
+        },
+        function(err,res){
+            if (err) throw err;
+            console.log("New product added!");
+            managerOptions();
+        }
+            );
+        
+        
+    })
 }
